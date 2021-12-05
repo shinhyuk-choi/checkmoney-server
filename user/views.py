@@ -1,5 +1,7 @@
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 # PROJECT
@@ -38,7 +40,11 @@ class UserViewSet(viewsets.GenericViewSet):
             - email(required)
             - password(required)
         """
-        user = UserService().login(request)
+        try:
+            user = authenticate(request, email=request.data.get('email'), password=request.data.get('password'))
+            login(request, user)
+        except:
+            raise APIException("Wrong email or wrong password")
         data = UserSerializer(user).data
         return Response(data)
 
@@ -48,5 +54,5 @@ class UserViewSet(viewsets.GenericViewSet):
         - 로그아웃
         - POST users/logout/
         """
-        UserService().logout(request)
+        logout(request)
         return Response()
