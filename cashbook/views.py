@@ -1,16 +1,13 @@
-from django.contrib.auth import authenticate, login, logout
-
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-# PROJECT
-from user.serializers import UserSerializer
-from user.services import UserService
+from rest_framework.permissions import IsAuthenticated
+
+from cashbook.models import CashBook
+from cashbook.serializers import CashBookSerializer
 
 
 class CashBookViewSet(viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated()]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request):
         """
@@ -19,74 +16,48 @@ class CashBookViewSet(viewsets.GenericViewSet):
         - data params
             - name(default:'기본')
         """
-        pass
+        serializer = CashBookSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        CashBook.objects.create(user=request.user, **serializer.validated_data)
+        return Response()
 
-    def update(self, request):
+    def list(self, request):
+        """
+        가계부 리스트 조회
+        - GET /cashbooks/
+        """
+        cashbooks = CashBook.objects.filter(user=request.user)
+        return Response(CashBookSerializer(cashbooks, many=True).data)
+
+    def update(self, request, pk):
         """
         가계부 수정
         - PUT /cashbooks/{cashbook_id}/
         - data params
             - name(required)
         """
-        pass
+        # 가계부가 유저의 소유인지 확인한다.
+        try:
+            cashbook = CashBook.objects.get(user=request.user, id=pk)
+        except CashBook.DoesNotExist:
+            pass
+        name = request.data.get('name')
+        if name is not None:
+            cashbook.name = name
+            cashbook.save()
+        return Response()
 
-    def delete(self, request):
+    def destroy(self, request, pk):
         """
         가계부 삭제
         - DELETE /cashbooks/{cashbook_id}/
         """
-        pass
-
-
-class CashBookLogViewSet(viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated()]
-
-    def create(self, request):
-        """
-        가계부 내역 생성
-        - POST /cashbook-logs/
-        - data params
-            - cashbook_id (required)
-            - log_type (required: "deposit" or "expense")
-
-        """
-        pass
-
-    def list(self, request):
-        """
-        가계부 내역 리스트 조회
-        - GET /cashbook-logs/
-        - data params
-            - cashbook_id (required)
-        """
-        pass
-
-    def retrieve(self, request, pk):
-        """
-        가계부 내역 단건(상세내역) 조회
-        - GET /cashbook-logs/{log_id}/
-        - data params
-            - cashbook_id (required)
-            - log_type (required: "deposit" or "expense")
-        """
-        pass
-
-    def update(self, request, pk):
-        """
-        가계부 내역 수정
-        - PUT /cashbook-logs/{log_id}/
-        - data params
-            - cashbook_id (required)
-            - log_type (required: "deposit" or "expense")
-        """
-        pass
-
-    def delete(self, request, pk):
-        """
-        가계부 내역 삭제
-        - DELETE /cashbook-logs/{log_id}/
-        - data params
-            - cashbook_id (required)
-            - log_type (required: "deposit" or "expense")
-        """
-        pass
+        try:
+            cashbook = CashBook.objects.get(user=request.user, id=pk)
+        except CashBook.DoesNotExist:
+            pass
+        name = request.data.get('name')
+        if name is not None:
+            cashbook.name = name
+            cashbook.save()
+        return Response()
