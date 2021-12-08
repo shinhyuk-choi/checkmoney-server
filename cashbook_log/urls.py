@@ -1,14 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from cashbook.views import CashBookViewSet
+from cashbook_log.views import CashBookLogViewSet
 
-app_name = 'cashbook'
+app_name = 'cashbook_log'
 
 router = SimpleRouter()
 
-router.register('cashbooks', CashBookViewSet, basename='cashbooks')
-
+router.register('cashbook-logs', CashBookLogViewSet, basename='cashbook-logs')
 
 urlpatterns = [
     path('', include((router.urls)))
