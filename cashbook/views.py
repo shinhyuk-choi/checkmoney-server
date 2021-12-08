@@ -18,8 +18,11 @@ class CashBookViewSet(viewsets.GenericViewSet):
         """
         serializer = CashBookSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        CashBook.objects.create(user=request.user, **serializer.validated_data)
-        return Response()
+
+        cashbook = CashBook.objects.create(user=request.user, **serializer.validated_data)
+
+        rtn = CashBookSerializer(cashbook).data
+        return Response(rtn, status=status.HTTP_200_OK)
 
     def list(self, request):
         """
@@ -27,7 +30,9 @@ class CashBookViewSet(viewsets.GenericViewSet):
         - GET /cashbooks/
         """
         cashbooks = CashBook.objects.filter(user=request.user)
-        return Response(CashBookSerializer(cashbooks, many=True).data)
+
+        rtn = CashBookSerializer(cashbooks, many=True).data
+        return Response(rtn, status=status.HTTP_200_OK)
 
     def update(self, request, pk):
         """
@@ -36,16 +41,18 @@ class CashBookViewSet(viewsets.GenericViewSet):
         - data params
             - name(required)
         """
-        # 가계부가 유저의 소유인지 확인한다.
         try:
             cashbook = CashBook.objects.get(user=request.user, id=pk)
         except CashBook.DoesNotExist:
-            pass
+            return Response({'error': 'Not Authorized'}, status=status.HTTP_403_FORBIDDEN)
+
         name = request.data.get('name')
         if name is not None:
             cashbook.name = name
             cashbook.save()
-        return Response()
+
+        rtn = CashBookSerializer(cashbook).data
+        return Response(rtn, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk):
         """
@@ -55,9 +62,7 @@ class CashBookViewSet(viewsets.GenericViewSet):
         try:
             cashbook = CashBook.objects.get(user=request.user, id=pk)
         except CashBook.DoesNotExist:
-            pass
-        name = request.data.get('name')
-        if name is not None:
-            cashbook.name = name
-            cashbook.save()
-        return Response()
+            return Response({'error': 'Not Authorized'}, status=status.HTTP_403_FORBIDDEN)
+
+        cashbook.delete()
+        return Response(status=status.HTTP_200_OK)
