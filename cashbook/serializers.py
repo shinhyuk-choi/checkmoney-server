@@ -11,3 +11,7 @@ class CashBookSerializer(serializers.ModelSerializer):
             'name',
             'balance',
         )
+
+
+class UpdateCashBookSerializer(serializers.Serializer):
+    name = serializers.CharField(required=True)

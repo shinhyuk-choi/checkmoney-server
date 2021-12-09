@@ -2,8 +2,8 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from cashbook.models import CashBook
-from cashbook.serializers import CashBookSerializer
+from cashbook.serializers import CashBookSerializer, UpdateCashBookSerializer
+from cashbook.services import CashBookService
 
 
 class CashBookViewSet(viewsets.GenericViewSet):
@@ -18,8 +18,9 @@ class CashBookViewSet(viewsets.GenericViewSet):
         """
         serializer = CashBookSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
 
-        cashbook = CashBook.objects.create(user=request.user, **serializer.validated_data)
+        cashbook = CashBookService().create(request.user, validated_data)
 
         rtn = CashBookSerializer(cashbook).data
         return Response(rtn, status=status.HTTP_200_OK)
@@ -29,7 +30,7 @@ class CashBookViewSet(viewsets.GenericViewSet):
         가계부 리스트 조회
         - GET /cashbooks/
         """
-        cashbooks = CashBook.objects.filter(user=request.user)
+        cashbooks = CashBookService().list(request.user)
 
         rtn = CashBookSerializer(cashbooks, many=True).data
         return Response(rtn, status=status.HTTP_200_OK)
@@ -41,15 +42,11 @@ class CashBookViewSet(viewsets.GenericViewSet):
         - data params
             - name(required)
         """
-        try:
-            cashbook = CashBook.objects.get(user=request.user, id=pk)
-        except CashBook.DoesNotExist:
-            return Response({'error': 'Not Authorized'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = UpdateCashBookSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
 
-        name = request.data.get('name')
-        if name is not None:
-            cashbook.name = name
-            cashbook.save()
+        cashbook = CashBookService().update(request.user, pk, validated_data)
 
         rtn = CashBookSerializer(cashbook).data
         return Response(rtn, status=status.HTTP_200_OK)
@@ -59,10 +56,6 @@ class CashBookViewSet(viewsets.GenericViewSet):
         가계부 삭제
         - DELETE /cashbooks/{cashbook_id}/
         """
-        try:
-            cashbook = CashBook.objects.get(user=request.user, id=pk)
-        except CashBook.DoesNotExist:
-            return Response({'error': 'Not Authorized'}, status=status.HTTP_403_FORBIDDEN)
+        cashbook = CashBookService().delete(request.user, pk)
 
-        cashbook.delete()
         return Response(status=status.HTTP_200_OK)

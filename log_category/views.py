@@ -1,10 +1,9 @@
-from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from log_category.models import DepositCategory, ExpenseCategory
 from log_category.serializers import LogCategorySerializer, CategoryTypeSerializer
+from log_category.services import LogCategoryService
 
 
 class LogCategoryViewSet(viewsets.GenericViewSet):
@@ -20,10 +19,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if validated_data.get('log_type') == 'deposit':
-            category = DepositCategory.objects.create(user=request.user, name=validated_data.get('name'))
-        else:
-            category = ExpenseCategory.objects.create(user=request.user, name=validated_data.get('name'))
+        category = LogCategoryService().create(request.user, validated_data)
 
         rtn = LogCategorySerializer(category).data
         return Response(rtn, status=status.HTTP_201_CREATED)
@@ -38,10 +34,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if validated_data.get('log_type') == 'deposit':
-            categories = DepositCategory.objects.filter(Q(user=request.user) | Q(user=None))
-        else:
-            categories = ExpenseCategory.objects.filter(Q(user=request.user) | Q(user=None))
+        categories = LogCategoryService().list(request.user, validated_data)
 
         rtn = LogCategorySerializer(categories, many=True).data
         return Response(rtn, status=status.HTTP_200_OK)
@@ -57,12 +50,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if validated_data.get('log_type') == 'deposit':
-            category = DepositCategory.objects.get(user=request.user, id=pk)
-        else:
-            category = ExpenseCategory.objects.get(user=request.user, id=pk)
-        category.name = validated_data.get('name')
-        category.save()
+        category = LogCategoryService().update(request.user, pk, validated_data)
 
         rtn = LogCategorySerializer(category).data
         return Response(rtn, status=status.HTTP_200_OK)
@@ -78,10 +66,6 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if validated_data.get('log_type') == 'deposit':
-            category = DepositCategory.objects.get(user=request.user, id=pk)
-        else:
-            category = ExpenseCategory.objects.get(user=request.user, id=pk)
+        LogCategoryService().delete(request.user, pk, validated_data)
 
-        category.delete()
         return Response(status=status.HTTP_200_OK)
