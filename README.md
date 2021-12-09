@@ -1,1 +1,1 @@
-# ledger-server
+# 가계부 API 서버
