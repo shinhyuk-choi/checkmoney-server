@@ -19,7 +19,7 @@ class LogCategorySerializer(serializers.Serializer):
         return log_type
 
 
-class LogTypeSerializer(serializers.Serializer):
+class CategoryTypeSerializer(serializers.Serializer):
     log_type = serializers.CharField(required=True, write_only=True)
 
     class Meta:

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from log_category.models import DepositCategory, ExpenseCategory
-from log_category.serializers import LogCategorySerializer, LogTypeSerializer
+from log_category.serializers import LogCategorySerializer, CategoryTypeSerializer
 
 
 class LogCategoryViewSet(viewsets.GenericViewSet):
@@ -34,7 +34,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         query_params
             - log_type(required: 'deposit' or 'expense')
         """
-        serializer = LogTypeSerializer(data=request.query_params)
+        serializer = CategoryTypeSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
@@ -74,7 +74,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
             - log_type(required: 'deposit' or 'expense')
         """
 
-        serializer = LogTypeSerializer(data=request.query_params)
+        serializer = CategoryTypeSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
