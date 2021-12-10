@@ -62,7 +62,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
             - log_type(required: 'deposit' or 'expense')
         """
 
-        serializer = CategoryTypeSerializer(data=request.query_params)
+        serializer = CategoryTypeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 

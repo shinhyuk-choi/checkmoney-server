@@ -82,7 +82,7 @@ class CashBookLogViewSet(viewsets.GenericViewSet):
 
         cashbook_log = CashBookLogService().update(pk, request.user, validated_data)
         rtn = CashBookLogSerializer(cashbook_log).data
-        return Response(rtn, status=status.HTTP_201_CREATED)
+        return Response(rtn, status=status.HTTP_200_OK)
 
     @transaction.atomic
     def destroy(self, request, pk):
