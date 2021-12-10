@@ -12,6 +12,13 @@ class CashBookService:
         cashbooks = CashBook.objects.filter(user=user)
         return cashbooks
 
+    def retrieve(self, user, cashbook_id):
+        try:
+            cashbook = CashBook.objects.get(user=user, id=cashbook_id)
+        except CashBook.DoesNotExist:
+            raise NotFound(detail=f"User does not have Cashbook: (id:{cashbook_id})")
+        return cashbook
+
     def update(self, user, cashbook_id, validated_data):
         try:
             cashbook = CashBook.objects.get(user=user, id=cashbook_id)

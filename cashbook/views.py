@@ -35,6 +35,16 @@ class CashBookViewSet(viewsets.GenericViewSet):
         rtn = CashBookSerializer(cashbooks, many=True).data
         return Response(rtn, status=status.HTTP_200_OK)
 
+    def retrieve(self, request, pk):
+        """
+        가계부 정보 조회
+        - GET /cashbooks/{cashbook_id}/
+        """
+        cashbook = CashBookService().retrieve(request.user, pk)
+
+        rtn = CashBookSerializer(cashbook).data
+        return Response(rtn, status=status.HTTP_200_OK)
+
     def update(self, request, pk):
         """
         가계부 수정
