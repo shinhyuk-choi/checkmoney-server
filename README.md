@@ -45,38 +45,18 @@
 <details>
 <summary><b>내용 자세히 보기</b></summary>
 <div markdown="1">
-- [Postman Doc](https://documenter.getpostman.com/view/16042359/UVJYJyot)
+
+로컬 환경 실행 후   
+- [swagger(drf_spectacular):oas3.0](http://127.0.0.1:8000/api/schema/swagger-ui/)
+  - 라이브러리를 설치 연결하였으나, 문서를 완벽하게 커스텀하지 못하였습니다. 브랜치 이동 후 확인할 수 있습니다.
+  ```bash
+   $ git checkout feature#5
+   $ docker-compose up --force-recreate --build
+  ```
 </div>
 </details>
 
-## API TEST 방법
 
-<details>
-  <summary><b>API TEST 방법 자세히 보기</b></summary>
-<div markdown="1">
-
-1. 우측 링크를 클릭해서 Postman으로 들어갑니다. [링크](https://www.postman.com/wecode-21-1st-kaka0/workspace/assignment7-cardoc/collection/16042359-a366ebbd-8548-41b4-9793-986bd6d81a8a?ctx=documentation)
-
-2. Postman 우측 상단에  ENVIRONMENT 설정 버튼를 클릭해서(눈 모양) `DJANGP_SERVER_URL` 설정이 올바른지 확인합니다. (http://18.188.189.173:8061) 올바르지 않으면 수정합니다.
-
-![image](https://user-images.githubusercontent.com/8219812/143769923-b47703d6-94f9-4c2c-a57c-c8007f16404b.png)
-
-3. 제공한 회원가입 API를 이용해서 `Cardoc-Django`탭에 있는 회원가입을 진행합니다. 회원가입이 성공하면 Access, Refresh Token을 반환합니다.
-
-![image](https://user-images.githubusercontent.com/8219812/143769970-6c51e15b-8f61-44d0-ad6b-93898f03fee5.png)
-
-4. Access 토큰을 이미지를 참고해서 입력하고, 저장합니다.
-
-![image](https://user-images.githubusercontent.com/8219812/143770006-25500af2-aac7-46ee-853b-7f8717077601.png)
-  
-5. 이제 Access Token이 설정되었기 때문에, 다른 API를 호출할 수 있습니다.
-
-6 만약 Send 버튼이 비활성화 이시면 fork를 이용해서 해당 postman project를 복사해서 시도하길 바랍니다.
-  
-  ![image](https://user-images.githubusercontent.com/8219812/143040169-cb3bbba5-7583-4937-b5b6-35489bcd5c7d.png)
-  
-</div>
-</details>
 
 ## 설치 및 실행 방법
 <details>
@@ -85,14 +65,15 @@
 
 1. 해당프로젝트를 clone 하고, 프로젝트 폴더로 들어간다.
     ```bash
-    git clone 
-    cd 
+    $ git clone https://github.com/shchoi94/checkmoney-server.git
+    $ cd checkmoney-server
     ```
 
 2. docker-compose 명령어를 이용해서 서버와 db를 실행시킨다.
     ```bash
-    docker-compose up
-    docker-compose up -d //백그라운드 실행
+    $ docker-compose up
+    $ docker-compose up -d //백그라운드 실행
+    $ docker-compose up --force-recreate --build //강제 재빌드
     ```
 
 </div>
