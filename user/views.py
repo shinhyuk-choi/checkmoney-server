@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db import transaction
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -18,6 +19,7 @@ class UserViewSet(viewsets.GenericViewSet):
             return [AllowAny()]
         return self.permission_classes
 
+    @transaction.atomic
     def create(self, request):
         """
         - 회원 가입

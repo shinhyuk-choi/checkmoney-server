@@ -3,6 +3,7 @@ from django.db.models import Q
 from rest_framework.exceptions import NotFound, APIException
 
 from cashbook.models import CashBook
+from cashbook_log.exceptions import DeletedLogException
 from cashbook_log.models import DepositLog, ExpenseLog
 from log_category.models import DepositCategory, ExpenseCategory
 
@@ -51,6 +52,8 @@ class CashBookLogService:
             cashbook_log.is_deleted = False
             self._update_balance(cashbook, log_type, cashbook_log.amount)
         else:
+            if cashbook_log.is_deleted:
+                raise DeletedLogException()
             if validated_data.get('amount'):
                 self._update_balance(cashbook, log_type, validated_data.get('amount') - cashbook_log.amount)
                 cashbook_log.amount = validated_data.get('amount')

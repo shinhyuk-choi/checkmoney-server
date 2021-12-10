@@ -5,7 +5,7 @@ services:
   db:
     image: mysql:5.7
     volumes:
-      - ./docker/data:/var/lib/checkmoney/data
+      - ./docker/data:/var/lib/checkmoney-server/data
     environment:
       - MYSQL_DATABASE=checkmoney
       - MYSQL_USER=check_money
@@ -16,12 +16,15 @@ services:
       - '3306:3306'
     command:
       - --explicit_defaults_for_timestamp=true
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
   django:
     build:
       context: .
       dockerfile: ./Dockerfile-dev
     environment:
       - DJANGO_DB_HOST=db
+      - TZ=Asia/Seoul
     ports:
       - "8000:8000"
     command: bash -c "

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from log_category.models import DepositCategory
+
 
 class CashBookLogSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -10,6 +12,7 @@ class CashBookLogSerializer(serializers.Serializer):
     category_id = serializers.IntegerField(required=True, write_only=True)
     category = serializers.SerializerMethodField(read_only=True)
     log_type = serializers.CharField(required=True, write_only=True)
+    is_deleted = serializers.BooleanField(read_only=True)
 
     class Meta:
         fields = (
@@ -21,6 +24,7 @@ class CashBookLogSerializer(serializers.Serializer):
             'cashbook_id',
             'category_id',
             'log_type',
+            'is_deleted',
         )
 
     def validate_log_type(self, log_type):
@@ -34,7 +38,11 @@ class CashBookLogSerializer(serializers.Serializer):
         return amount
 
     def get_category(self, log):
-        return log.category.name
+        category = log.category
+        if type(category) == DepositCategory:
+            return f'[deposit]{log.category.name}'
+        else:
+            return f'[expense]{log.category.name}'
 
 
 class LogTypeSerializer(serializers.Serializer):
@@ -56,8 +64,8 @@ class LogTypeSerializer(serializers.Serializer):
 class UpdateLogSerializer(serializers.Serializer):
     cashbook_id = serializers.IntegerField(required=True, write_only=True)
     log_type = serializers.CharField(required=True, write_only=True)
-    amount = serializers.IntegerField()
-    memo = serializers.CharField()
+    amount = serializers.IntegerField(required=False)
+    memo = serializers.CharField(required=False)
     restore = serializers.BooleanField()
 
     class Meta:
