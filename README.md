@@ -69,7 +69,7 @@
     $ docker-compose up -d //백그라운드 실행
     $ docker-compose up --force-recreate --build //강제 재빌드
     ```
-
+3. 회원가입 -> 로그인 -> 입금카테고리 생성, 소비카테고리 생성 의 흐름으로 api를 테스트 합니다.(데이터 import 자동화 및 편리성을 제공하지 못해 죄송합니다.)   
 ## 폴더 구조
 <details>
 <summary><b>내용 자세히 보기</b></summary>
