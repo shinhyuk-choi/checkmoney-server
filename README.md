@@ -42,26 +42,20 @@
 ## 모델링
 ![image](https://user-images.githubusercontent.com/68194553/145536499-2ee4ea68-19fd-488d-b167-3f6a34bcb59f.png)
 ## API
-<details>
-<summary><b>내용 자세히 보기</b></summary>
-<div markdown="1">
 
 로컬 환경 실행 후   
+- [수기 작성 wiki api 문서](https://github.com/shchoi94/checkmoney-server/wiki)    
 - [swagger(drf_spectacular):oas3.0](http://127.0.0.1:8000/api/schema/swagger-ui/)
   - 라이브러리를 설치 연결하였으나, 문서를 완벽하게 커스텀하지 못하였습니다. 브랜치 이동 후 확인할 수 있습니다.
   ```bash
    $ git checkout feature#5
    $ docker-compose up --force-recreate --build
   ```
-</div>
-</details>
+
 
 
 
 ## 설치 및 실행 방법
-<details>
- <summary><b>설치 및 실행 방법 자세히 보기</b></summary>
-<div markdown="1">
 
 1. 해당프로젝트를 clone 하고, 프로젝트 폴더로 들어간다.
     ```bash
@@ -76,10 +70,11 @@
     $ docker-compose up --force-recreate --build //강제 재빌드
     ```
 
-</div>
-</details>
-
 ## 폴더 구조
+<details>
+<summary><b>내용 자세히 보기</b></summary>
+<div markdown="1">
+    
 ```bash
 📦 checkmoney-server
  ┣ 📂 checkmoney
@@ -150,4 +145,5 @@
  ┃ ┃ ┣ 📜 test_e2e.py
  ┃ ┃ ┗ 📜 test_service.py
 ```
-
+</div>
+</details>
