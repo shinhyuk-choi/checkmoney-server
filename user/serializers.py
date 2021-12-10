@@ -21,6 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         return make_password(value)
 
-    def get_token(self, user):
+    def get_token(self, user) -> str:
         token= user.auth_token.key
         return token

@@ -2,11 +2,14 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from log_category.models import DepositCategory
 from log_category.serializers import LogCategorySerializer, CategoryTypeSerializer
 from log_category.services import LogCategoryService
 
 
 class LogCategoryViewSet(viewsets.GenericViewSet):
+    queryset = DepositCategory
+    serializer_class = LogCategorySerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
@@ -39,7 +42,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         rtn = LogCategorySerializer(categories, many=True).data
         return Response(rtn, status=status.HTTP_200_OK)
 
-    def update(self, request, pk):
+    def update(self, request, pk: int):
         """
         PUT /log-categories/{log_category_id}
         data params
@@ -55,7 +58,7 @@ class LogCategoryViewSet(viewsets.GenericViewSet):
         rtn = LogCategorySerializer(category).data
         return Response(rtn, status=status.HTTP_200_OK)
 
-    def destroy(self, request, pk):
+    def destroy(self, request, pk: int):
         """
         DELETE /log-categories/{log_category_id}
         data params
