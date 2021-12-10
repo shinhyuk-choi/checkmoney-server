@@ -40,7 +40,7 @@
 ## 언어 및 라이브러리,DB
 > Python:Django(DRF), DB: MySQL:5.7
 ## 모델링
-- temp
+![image](https://user-images.githubusercontent.com/68194553/145536499-2ee4ea68-19fd-488d-b167-3f6a34bcb59f.png)
 ## API
 <details>
 <summary><b>내용 자세히 보기</b></summary>
