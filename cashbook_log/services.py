@@ -122,7 +122,7 @@ class CashBookLogService:
             try:
                 category = ExpenseCategory.objects.get(Q(user=user) | Q(user=None),
                                                        id=category_id)
-            except DepositCategory.DoesNotExist:
+            except ExpenseCategory.DoesNotExist:
                 raise NotFound(detail=f"User does not have ExpenseCategory: (id:{category_id})")
 
             cashbook_log = ExpenseLog.objects.create(cashbook=cashbook, category=category, **validated_data)
