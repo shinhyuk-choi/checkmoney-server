@@ -40,6 +40,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
+    'drf_spectacular',
 ]
 
 PROJECT_APPS = [
@@ -66,6 +67,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'CheckMoney-Server API',
+    'DESCRIPTION': 'checkmoney-server api',
+    'VERSION': '1.0.0',
 }
 
 ROOT_URLCONF = 'checkmoney.urls'

@@ -37,7 +37,7 @@ class CashBookLogSerializer(serializers.Serializer):
             raise serializers.ValidationError("This field should be positive integer")
         return amount
 
-    def get_category(self, log):
+    def get_category(self, log) -> str:
         category = log.category
         if type(category) == DepositCategory:
             return f'[deposit]{log.category.name}'

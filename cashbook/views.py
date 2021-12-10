@@ -1,12 +1,17 @@
+from django.utils.decorators import method_decorator
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from cashbook.models import CashBook
 from cashbook.serializers import CashBookSerializer, UpdateCashBookSerializer
 from cashbook.services import CashBookService
+from schema.cashbook import CashBookSchema
 
 
 class CashBookViewSet(viewsets.GenericViewSet):
+    queryset = CashBook.objects.all()
+    serializer_class = CashBookSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
@@ -35,7 +40,7 @@ class CashBookViewSet(viewsets.GenericViewSet):
         rtn = CashBookSerializer(cashbooks, many=True).data
         return Response(rtn, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, pk):
+    def retrieve(self, request, pk:int):
         """
         가계부 정보 조회
         - GET /cashbooks/{cashbook_id}/
@@ -45,7 +50,7 @@ class CashBookViewSet(viewsets.GenericViewSet):
         rtn = CashBookSerializer(cashbook).data
         return Response(rtn, status=status.HTTP_200_OK)
 
-    def update(self, request, pk):
+    def update(self, request, pk:int):
         """
         가계부 수정
         - PUT /cashbooks/{cashbook_id}/
@@ -61,7 +66,7 @@ class CashBookViewSet(viewsets.GenericViewSet):
         rtn = CashBookSerializer(cashbook).data
         return Response(rtn, status=status.HTTP_200_OK)
 
-    def destroy(self, request, pk):
+    def destroy(self, request, pk: int):
         """
         가계부 삭제
         - DELETE /cashbooks/{cashbook_id}/
