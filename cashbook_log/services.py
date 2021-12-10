@@ -19,6 +19,26 @@ class CashBookLogService:
         self._update_balance(cashbook, log_type, validated_data.get('amount'))
         return cashbook_log
 
+    def list(self, user, validated_data):
+        cashbook = self._get_cashbook(user, validated_data.get('cashbook_id'))
+        log_type = validated_data.get('log_type')
+        filter_kwargs = dict(is_deleted=validated_data.get('is_deleted'))
+        if validated_data.get('date_from'):
+            date = [validated_data.get('date_from'), validated_data.get('date_to')]
+            filter_kwargs['date__range'] = date
+        if log_type:
+            if log_type == 'deposit':
+                logs = DepositLog.objects.filter(cashbook=cashbook, **filter_kwargs).select_related('category')
+            elif log_type == 'expense':
+                logs = ExpenseLog.objects.filter(cashbook=cashbook, **filter_kwargs).select_related('category')
+            else:
+                raise APIException(detail="Invalid log_type")
+        else:
+            d_logs = list(DepositLog.objects.filter(cashbook=cashbook, **filter_kwargs).select_related('category'))
+            e_logs = list(ExpenseLog.objects.filter(cashbook=cashbook, **filter_kwargs).select_related('category'))
+            logs = d_logs + e_logs
+        return logs
+
     def retrieve(self, log_id, user, validated_data):
         log_type = validated_data.get('log_type')
         if log_type == 'deposit':
@@ -68,7 +88,7 @@ class CashBookLogService:
         cashbook = self._get_cashbook(user, validated_data.get('cashbook_id'))
         cashbook_log = self._get_cashbook_log(cashbook, log_type, log_id)
         if cashbook_log.is_deleted:
-            raise APIException(detail="Already Deleted Log")
+            raise DeletedLogException()
         self._update_balance(cashbook, log_type, cashbook_log.amount * -1)
         cashbook_log.is_deleted = True
         cashbook_log.save()

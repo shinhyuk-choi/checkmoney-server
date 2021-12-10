@@ -4,11 +4,13 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from cashbook_log.serializers import CashBookLogSerializer, LogTypeSerializer, UpdateLogSerializer
+from cashbook_log.models import DepositLog
+from cashbook_log.serializers import CashBookLogSerializer, LogTypeSerializer, UpdateLogSerializer, ListLogSerializer
 from cashbook_log.services import CashBookLogService
 
 
 class CashBookLogViewSet(viewsets.GenericViewSet):
+    queryset = DepositLog.objects.all()
     serializer_class = CashBookLogSerializer
     permission_classes = [IsAuthenticated]
 
@@ -38,20 +40,26 @@ class CashBookLogViewSet(viewsets.GenericViewSet):
         """
         가계부 내역 리스트 조회
         - GET /cashbook-logs/
-        - data params
+        - query params
             - cashbook_id (required)
         """
-        return Response()
+        serializer = ListLogSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        cashbook_logs = CashBookLogService().list(request.user, validated_data)
+        rtn = CashBookLogSerializer(cashbook_logs, many=True).data
+        return Response(rtn, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk):
         """
         가계부 내역 단건(상세내역) 조회
         - GET /cashbook-logs/{log_id}/
-        - data params
+        - query params
             - cashbook_id (required)
-            - log_type ("deposit" or "expense")
+            - log_type (required: "deposit" or "expense")
         """
-        serializer = LogTypeSerializer(data=request.data)
+        serializer = LogTypeSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 

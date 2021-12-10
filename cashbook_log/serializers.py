@@ -94,3 +94,24 @@ class UpdateLogSerializer(serializers.Serializer):
         if restore and (amount is not None or memo is not None):
             raise serializers.ValidationError("Could not restore and update together")
         return super(UpdateLogSerializer, self).validate(data)
+
+
+class ListLogSerializer(serializers.Serializer):
+    cashbook_id = serializers.IntegerField(required=True, write_only=True)
+    log_type = serializers.CharField(required=False, write_only=True)
+    date_from = serializers.DateField(required=False)
+    date_to = serializers.DateField(required=False)
+    is_deleted = serializers.BooleanField(default=False)
+
+    def validate_log_type(self, log_type):
+        if log_type not in ['deposit', 'expense']:
+            raise serializers.ValidationError("This field should be \'deposit\' or \'expense\' ")
+        return log_type
+
+    def validate(self, data):
+        date_from = data.get('date_from')
+        date_to = data.get('date_to')
+
+        if (date_from or date_to) and not (date_from and date_to):
+            raise serializers.ValidationError("Enter date_from, date_to both ")
+        return super(ListLogSerializer, self).validate(data)
